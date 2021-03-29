@@ -1,0 +1,160 @@
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename BETWEEN 'JAMES' AND 'MARTIN';
+
+SELECT empno,
+       ename,
+       sal,
+       deptno
+FROM emp
+WHERE deptno = 10 OR deptno = 20;
+
+SELECT empno,
+       ename,
+       sal,
+       deptno
+FROM emp
+WHERE deptno in(10,20);
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal LIKE '1%';
+-- sal 행의 맨 앞자리가 1인 데이터를 가져와라
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename LIKE 'A%';
+
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE hiredate LIKE '___12%';
+-- UnderScore 가 한자리씩 자리를 차지한다.
+-- 개발자들은 흔히 '%12%' 을 쓴다.
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE comm IS NULL;
+-- WHERE comm IS NOT NULL;
+-- 널이 아닌 값을 찾는다
+
+
+
+-- emp테이블에서 sal이 1000보다 큰 사람 중에서 comm이 1000보다
+-- 작거나 NULL인 사원번호, 사원이름, 입사일, comm을 출력
+SELECT empno, ename, hiredate, comm
+FROM emp
+WHERE sal > 1000
+and (comm < 1000
+OR comm IS NULL);
+
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE empno = &empno;
+-- &을 넣어주면 무슨창이 뜸
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+ORDER BY empno DESC;
+-- 내림차순
+-- 오름차순은 ASC 혹은 안넣어줘도 된다
+
+SELECT empno, ename, deptno, sal
+FROM emp
+ORDER BY deptno ASC, sal DESC;
+
+-- 합집합 : UNION (중복 값 제거)
+-- 합집합 : UNION ALL (중복 값 포함)
+-- 교집합 : INTERSECT
+-- 차집합 : MINUS
+
+SELECT studno, name
+FROM student
+WHERE deptno1 = 101
+UNION
+SELECT profno, name
+-- 컬럼 갯수가 같아야한다.
+FROM professor
+WHERE deptno = 201;
+
+SELECT studno, name
+FROM student
+WHERE deptno1 = 101
+UNION ALL
+SELECT studno, name
+FROM student
+WHERE deptno2 = 201;
+
+
+SELECT empno, ename, sal
+FROM emp
+MINUS
+SELECT empno, ename, sal
+-- 컬럼 갯수가 같아야한다.
+FROM emp
+WHERE sal > 2500;
+
+-- DML의 SELECT문 끝
+
+
+-- DDL 데이터 정의어
+-- CREATE(생성), ALTER(수정), TRUNCATE(행 제거), DROP(삭제)
+
+CREATE TABLE new_table
+(no NUMBER(3),
+name VARCHAR2(10),
+birch DATE
+);
+
+-- DEFAULT : null이 들어왔을때 기본적으로 세팅해주는 값
+-- SYSDATE : 시스템 날짜를 가져와서 입력
+CREATE TABLE tt02
+(no NUMBER(3)
+DEFAULT 0,
+name VARCHAR2(10)
+DEFAULT 'NO Name',
+birch DATE DEFAULT SYSDATE
+);
+
+-- 롤백
+INSERT INTO tt02(no) VALUES(1);
+rollback;
+
+-- *(아스타) : 전체
+-- 데이터 복사
+CREATE TABLE dept2
+AS
+SELECT * FROM dept;
+
+-- deptno와 dname만 복사
+CREATE TABLE dept3
+AS
+SELECT deptno, dname FROM dept;
+
+-- 컬럼(column)열만 가져와서 복사할때
+-- WHERE은 잘못된 코드
+CREATE TABLE dept4
+AS
+SELECT * FROM dept
+WHERE 1 = 2;
+
+-- 테이블 생성 시 주의사항
+-- 1. 테이블 이름은 반드시 문자로 시작.
+-- 2. 테이블 이름이나 컬럼 이름은 최대 30바이트까지 가능.
+-- 3. 테이블 이름은 같은 계정의 사용자가 중복으로 사용 할 수 없음.
+-- 4. 테이블 이름이나 컬럼 이름은 오라클이 사용하는 키워드(예약어)를 사용하면 안됨.

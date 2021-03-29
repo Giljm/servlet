@@ -1,0 +1,197 @@
+-- 데이터 조회 (SELECT)
+-- 모든 컬럼 조회
+SELECT *
+FROM emp;
+-- 원하는 컬럼만 조회
+
+SELECT empno eno1,
+       ename,
+       job
+FROM emp;
+
+-- 표현식을 사용하여 출력
+SELECT ename||'님 안녕하세요 ^^!' "Good Morning"
+FROM emp;
+
+-- 중복된 값을 제거하고 출력
+SELECT DISTINCT job deptno
+FROM emp;
+
+-- 연결 연산자 (||)
+SELECT ename|| ' ''s jobis '||job"NAME AND JON"
+FROM emp;
+
+-- 원하는 조건만 골라내기 : WHERE절 사용
+SELECT empno,
+       ename,
+       sal,
+       hiredate
+FROM emp
+WHERE hiredate = '80/12/17';
+
+SELECT ename,
+        sal,
+        sal + 100,
+        sal * 1.1
+FROM emp
+WHERE deptno = 10;
+
+-- !=,<>
+-- >
+-- >=
+-- <
+-- <=
+
+-- BETWEEN a AND b
+-- a or b or c IN(a, b, c)
+-- && and , || or
+-- IS NULL (널만 가져와라)
+-- IS NOT NULL(널이 아닌 값만 가져와라)
+-- A AND B
+-- A OR B
+-- NOT A
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal >= '4000';
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename >= 'W';
+
+SELECT empno,
+       ename,
+       sal,
+       hiredate
+FROM emp
+WHERE hiredate >= '81/12/25';
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal BETWEEN 2000 AND 3000;
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal >= 2000
+AND sal <= 3000;
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename BETWEEN 'JAMES' AND 'MARTIN';
+
+SELECT empno,
+       ename,
+       sal,
+       deptno
+FROM emp
+WHERE deptno = 10 OR deptno = 20;
+
+SELECT empno,
+       ename,
+       sal,
+       deptno
+FROM emp
+WHERE deptno in(10,20);
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal LIKE '1%';
+-- sal 행의 맨 앞자리가 1인 데이터를 가져와라
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename LIKE 'A%';
+
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE hiredate LIKE '___12%';
+-- UnderScore 가 한자리씩 자리를 차지한다.
+-- 개발자들은 흔히 '%12%' 을 쓴다.
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE comm IS NULL;
+-- WHERE comm IS NOT NULL;
+-- 널이 아닌 값을 찾는다
+
+
+
+-- emp테이블에서 sal이 1000보다 큰 사람 중에서 comm이 1000보다
+-- 작거나 NULL인 사원번호, 사원이름, 입사일, comm을 출력
+SELECT empno, ename, hiredate, comm
+FROM emp
+WHERE sal > 1000
+and (comm < 1000
+OR comm IS NULL);
+
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE empno = &empno;
+-- &을 넣어주면 무슨창이 뜸
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+ORDER BY empno DESC;
+-- 내림차순
+-- 오름차순은 ASC 혹은 안넣어줘도 된다
+
+SELECT empno, ename, deptno, sal
+FROM emp
+ORDER BY deptno ASC, sal DESC;
+
+-- 합집합 : UNION (중복 값 제거)
+-- 합집합 : UNION ALL (중복 값 포함)
+-- 교집합 : INTERSECT
+-- 차집합 : MINUS
+
+SELECT studno, name
+FROM student
+WHERE deptno1 = 101
+UNION
+SELECT profno, name
+-- 컬럼 갯수가 같아야한다.
+FROM professor
+WHERE deptno = 201;
+
+SELECT studno, name
+FROM student
+WHERE deptno1 = 101
+UNION ALL
+SELECT studno, name
+FROM student
+WHERE deptno2 = 201;
+
+
+SELECT empno, ename, sal
+FROM emp
+MINUS
+SELECT empno, ename, sal
+-- 컬럼 갯수가 같아야한다.
+FROM emp
+WHERE sal > 2500;
+
+-- DML의 SELECT문 끝

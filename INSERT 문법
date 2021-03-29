@@ -1,0 +1,38 @@
+
+INSERT문법
+INSERT INTO table명 (컬럼명1, 컬럼명2, ....)
+VALUES(값1, 값2, ....);
+
+-- 인서트를 사용할때는 컬럼과 값의 갯수가 같아야 한다.
+INSERT INTO dept2(deptno, dname)
+VALUES(50, 'developer');
+
+INSERT INTO dept2
+VALUES(50, 'developer', 20);
+
+-- 해당 데이터의 컬럼과 데이터 값 위치만 맞춰주면 데이터베이스가
+-- 알아서 위치 맞춰서 넣어줌.
+INSERT INTO dept2(dname,deptno)
+VALUES('developer',60);
+
+DELETE FROM dept2
+
+commit;
+
+INSERT INTO professor(profno, name,          id,          position,       pay, hiredate,                          bonus)
+VALUES                (5004, 'James Bond' , 'Love_me', 'a full professor',500, TO_DATE('2014-10-23','YYYY-MM-DD'), ' ');
+
+
+-- 테스트 문제
+-- professor 테이블을 professor2 복사해라.
+-- 단, 데이터는 복사하지 않아야한다.
+CREATE TABLE professor2
+AS
+SELECT *
+FROM professor
+WHERE 1 = 2;
+
+
+-- ITAS
+INSERT INTO professor2
+SELECT * FROM professor;

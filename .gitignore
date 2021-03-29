@@ -1,0 +1,22 @@
+# 설정폴더
+.metadata
+.settings
+bin/
+*.class
+
+# 자동생성파일
+*.jar
+*.war
+*.ear
+
+# 임시생성파일
+tmp/
+*.tmp
+*.bak
+*.swp
+
+# 가상 머신 오류 로그
+hs_err_pid*
+
+# eclips 임시 설정
+laencher*

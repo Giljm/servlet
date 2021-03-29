@@ -1,0 +1,46 @@
+DECODE 사용예제
+
+
+-- 문제
+-- student 테이블을 사용하여 제 1 전공(deptno1)이 101번인 학과 학생들의
+-- 이름과 연락처와 지역을 출력하세요
+-- 단, 지역번호가 02는 SEOUL, 055는 GYEONGNAM으로 표시
+
+SELECT  name,
+		tel,
+		INSTR(tel, ')'), -- 먼저 몇이 나오는지 확인 / 결과 : 4
+		DECODE(SUBSTR(tel, 1, INSTR(tel, ')')-1),02, 'SEOUL', 055, 'GYEONGNAM') "지역"
+FROM student
+WHERE deptno1 = 101;
+
+
+
+
+
+-- CASE 함수
+-- : 타 DBMS에서 오라클의 DECODE함수 처럼 사용할 수 있는 함수
+
+-- CASE 조건 WHEN 결과 1 THEN 출력 1
+--         (WHEN 결과 1 THEN 출력 2...)
+--         ELSE 출력3
+--         END "컬럼명"
+         
+SELECT name, tel, INSTR(tel, ')'),
+CASE(SUBSTR(tel, 1, INSTR(tel, ')')-1)) WHEN '02' THEN 'SEOUL'
+                                        WHEN '055' THEN 'GYEONGNAM'
+                                        WHEN '031' THEN 'GYENGGI' ELSE 'ETC' END "지역"
+FROM student
+WHERE deptno1 = 201;
+
+
+SELECT name,
+       SUBSTR(jumin, 3, 2) "MONTH",
+       CASE WHEN SUBSTR(jumin, 3, 2)  BETWEEN '01' AND '03' THEN '1/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '04' AND '06' THEN '2/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '07' AND '09' THEN '3/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '10' AND '12' THEN '4/4'
+                                                      
+       END "Quarter"
+       
+FROM student
+WHERE deptno1 = 201;

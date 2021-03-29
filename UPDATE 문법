@@ -1,0 +1,33 @@
+UPDATE 문법
+
+UPDATE table명
+SET 컬럼명 = value -- 어떤 컬럼을
+WHERE 조건; 
+
+UPDATE professor
+SET bonus = 200
+WHERE position = 'assistant 
+
+
+professor';
+commit;
+rollback;
+
+
+UPDATE emp e -- 업데이트할 테이블명 지정, 테이블명 옆에다 별칭을 붙임
+SET sal = (sal + sal * 0.1) -- 컬럼몇 및 함수 조건을 이용해서 sal에 적용
+WHERE EXISTS -- WHERE 조건문
+    (SELECT * -- *(아스타) 모든것을
+    FROM dept d -- dept 테이블, d로 별칭
+    WHERE d.loc = 'DALLAS' -- dept테이블의 loc컬럼에서 'DALLAS'만
+    AND e.deptno = d.deptno); -- 그리고 emp테이블 deptno와 dept테이블의 deptno가 같아야 한다.
+    
+rollback;
+
+-- 사원번호가 7566인 사람의 급여를 emp 테이블에서
+-- 부서번호가 20인 사원중에 최대 급여로 업데이트
+UPDATE emp
+SET sal = (SELECT MAX(sal)
+           FROM emp
+           WHERE deptno = 20)
+WHERE empno = 7566;

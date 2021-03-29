@@ -1,0 +1,9 @@
+
+DELETE 문법
+DELETE FROM table명
+WHERE 조건 ;
+
+-- TEST 문제
+-- emp테이블에서 부서번호가 20번 부서의 사원 정보를 삭제
+DELETE FROM emp -- DELETE에는 FROM이 붙는다.
+WHERE deptno = 20; -- 조건문.

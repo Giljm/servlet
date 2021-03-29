@@ -1,0 +1,86 @@
+-- 데이터 조회 (SELECT)
+-- 모든 컬럼 조회
+SELECT *
+FROM emp;
+-- 원하는 컬럼만 조회
+
+SELECT empno eno1,
+       ename,
+       job
+FROM emp;
+
+-- 표현식을 사용하여 출력
+SELECT ename||'님 안녕하세요 ^^!' "Good Morning"
+FROM emp;
+
+-- 중복된 값을 제거하고 출력
+SELECT DISTINCT job deptno
+FROM emp;
+
+-- 연결 연산자 (||)
+SELECT ename|| ' ''s jobis '||job"NAME AND JON"
+FROM emp;
+
+-- 원하는 조건만 골라내기 : WHERE절 사용
+SELECT empno,
+       ename,
+       sal,
+       hiredate
+FROM emp
+WHERE hiredate = '80/12/17';
+
+SELECT ename,
+        sal,
+        sal + 100,
+        sal * 1.1
+FROM emp
+WHERE deptno = 10;
+
+-- !=,<>
+-- >
+-- >=
+-- <
+-- <=
+
+-- BETWEEN a AND b
+-- a or b or c IN(a, b, c)
+-- && and , || or
+-- IS NULL (널만 가져와라)
+-- IS NOT NULL(널이 아닌 값만 가져와라)
+-- A AND B
+-- A OR B
+-- NOT A
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal >= '4000';
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE ename >= 'W';
+
+SELECT empno,
+       ename,
+       sal,
+       hiredate
+FROM emp
+WHERE hiredate >= '81/12/25';
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal BETWEEN 2000 AND 3000;
+
+SELECT empno,
+       ename,
+       sal
+FROM emp
+WHERE sal >= 2000
+AND sal <= 3000;
+
+

@@ -1,0 +1,235 @@
+- 현재 시스템의 날짜를 가져옴\
+SELECT SYSDATE,
+       ADD_MONTHS(SYSDATE, 3)
+FROM dual;
+
+-- 형 변환 함수
+-- CHAR(n) : 고정 길이의 문자를 저장, 최대값은 2000바이트
+-- VARCHAR2(n) : 가변길이 문자를 저장, 최대값 4000바이트
+-- NUMBER(p, s) : 숫자값을 저장, p는 전체 자릿수 1 ~ 38 자리까지 가능
+--                             s는 소수점 이하 자릿수 -84 ~ 127사이 
+-- DATE : 총 바이트 (BC 4712년 1월 1일 부터 AD 9999년 12월 31일 까지의 날짜를 저장)
+-- LONG : 가변 길이의 문자를 저장, 최대 2GB
+-- CLOB : 가변 길이의 문자를 저장, 최대 4GB
+-- BLOB : 가변 길이의 바이너리 데이터를 저장, 최대 4GB
+                               
+    
+    
+SELECT "SYSDATE",
+        SYSTIMESTAMP "SYSTIMESTAMP"
+FROM dual;
+
+
+SELECT 2 + '2' -- 10g 이상부터는 이게 암시적으로 형변환이 일어난다
+FROM dual; 
+
+SELECT SYSDATE,
+        TO_CHAR (SYSDATE , 'YYYY') "YYYY", -- 일표시 중요함
+        TO_CHAR (SYSDATE , 'RRRR') "RRRR",
+        TO_CHAR (SYSDATE , 'YY') "YY",
+        TO_CHAR (SYSDATE , 'RR') "RR",
+        TO_CHAR (SYSDATE , 'YEAR') "YEAR"
+        
+FROM dual;
+-- 월은 대문자 M으로 해야함 분이 m으로 해야함
+
+SELECT SYSDATE,
+        TO_CHAR (SYSDATE , 'MM') "MM", -- 월표시 중요함
+        TO_CHAR (SYSDATE , 'MON') "MON",
+        TO_CHAR (SYSDATE , 'MONTH') "MONTH"
+FROM dual;
+
+SELECT SYSDATE,
+        TO_CHAR (SYSDATE , 'DD') "DD",
+        TO_CHAR (SYSDATE , 'DAY') "DAY",
+        TO_CHAR (SYSDATE , 'MONTH') "DDTH" 
+FROM dual;
+
+SELECT SYSDATE,
+        TO_CHAR (SYSDATE , 'HH') "HH",
+        TO_CHAR (SYSDATE , 'HH24') "HH24",
+        TO_CHAR (SYSDATE , 'MI') "MI", 
+        TO_CHAR (SYSDATE , 'SS') "SS",
+        TO_CHAR (SYSDATE , 'YYYY-MM-DD:HH24:MI:SS') "시간" -- 제일 중요
+FROM dual;
+
+-- 숫자형에서 문자형으로 형변환 할때
+SELECT empno,
+        ename,
+        sal,
+        comm,
+        TO_CHAR((sal * 12)+comm, '999,999') "SALARY" 
+FROM emp
+WHERE ename = 'ALLEN';
+
+
+SELECT TO_CHAR(1234, '99999'), -- "9의 개수만큼 자릿수"
+        TO_CHAR(1234, '099999'), -- "9의 개수만큼 자릿수"
+        TO_CHAR(1234, '$99999'), -- "$표시를 붙여서 표시",
+        TO_CHAR(1234, '9999.99'),  -- "소수점 이하를 표시"
+        TO_CHAR(1234, '99,999')  -- "천 단위 구분 기호를 표시"
+FROM dual;
+
+
+SELECT 2 + ASCII ('A') -- 원시적형 변환
+                        -- ASCII를 사용해서 대문자 A를 65로 바꿈
+FROM dual;
+
+SELECT ename,
+        comm,
+        NVL (comm, 0) "NVL 0",
+        NVL (comm, '100') "NVL 100"
+        
+FROM emp
+WHERE deptno = 30;
+
+
+SELECT NVL (hpage, 'https://www.naver.com') "문자 치환"
+FROM professor
+WHERE profno = 2001;
+
+-- NVL2(coll, col2, col3)
+-- : coll의 값이 null이 아니면 col2, null이면 col3를 표시
+
+SELECT ename,
+        comm,
+        NVL2 (comm, sal + comm, sal * 0) "NVL2"
+        
+FROM emp
+WHERE deptno = 30;
+
+
+-- DECODE(A, B, '1', null)
+-- null은 생략가능
+-- A가 B라면 1을 출력하고 그렇지 않으면 null을 출력
+SELECT deptno,
+        name,
+        DECODE(deptno, 101, '컴공') "DNAME"  -- 부서의 번호가 101 이라면 컴공, 그 외에는 null을 출력해라
+                                             -- 단, 널은 안썻다
+FROM professor;
+
+SELECT deptno,
+        name,
+        DECODE(deptno, 101, '컴공','기타') "DNAME"  -- 부서의 번호가 101 이라면 컴공, 그 외에는 기타를 출력해라
+FROM professor;
+
+SELECT deptno,
+        name,
+        DECODE(deptno, 101, '컴공',
+                        102, '멀티미디어',
+                        103, '소프트엔지니어','기타') "DNAME"
+FROM professor;
+
+SELECT deptno,
+        name,
+        DECODE(deptno, 101, DECODE(name, 'Audie Murphy', 'BEST!', 'Good')) "ETC"
+        -- deptno가 101인 사람중에서 이름이 Audie Muphry인 사람은 베스트, 그 외에는 굿을 표시하라
+FROM professor; -- professor 테이블
+
+-- student 테이블을 사용하여 제 1전공(deptno1)이 101번 학과 학생들의
+-- 이름과 주민번호, 성별을 출력하되 성별은 주민번호(jumin) 컬럼을
+-- 이용하여 7번째 숫자가 1일 경우 "M", 2일 경우 "F"를 출력하시오.
+
+SELECT name,
+        jumin,
+        DECODE(SUBSTR(jumin, 7, 1) ,1, 'M', 'F' ) "성별"
+        -- SUBSTR : 주어진 문자에서 특정 문자만 추출
+FROM student
+WHERE deptno1 = 101;
+
+-- student 테이블을 사용하여 제 1 전공(deptno1)이 101번인 학과 학생들의
+-- 이름과 연락처와 지역을 출력하세요
+-- 단, 지역번호가 02는 SEOUL, 055는 GYEONGNAM으로 표시
+
+SELECT name, tel, INSTR(tel, ')'), DECODE(SUBSTR(tel, 1, INSTR(tel, ')')-1),02, 'SEOUL', 055, 'GYEONGNAM') "지역"
+FROM student
+WHERE deptno1 = 101;
+
+-- CASE 함수
+-- : 타 DBMS에서 오라클의 DECODE함수 처럼 사용할 수 있는 함수
+
+-- CASE 조건 WHEN 결과 1 THEN 출력 1
+--         (WHEN 결과 1 THEN 출력 2...)
+--         ELSE 출력3
+--         END "컬럼명"
+         
+SELECT name, tel, INSTR(tel, ')'),
+CASE(SUBSTR(tel, 1, INSTR(tel, ')')-1)) WHEN '02' THEN 'SEOUL'
+                                        WHEN '055' THEN 'GYEONGNAM'
+                                        WHEN '031' THEN 'GYENGGI' ELSE 'ETC' END "지역"
+FROM student
+WHERE deptno1 = 201;
+
+
+SELECT name,
+       SUBSTR(jumin, 3, 2) "MONTH",
+       CASE WHEN SUBSTR(jumin, 3, 2)  BETWEEN '01' AND '03' THEN '1/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '04' AND '06' THEN '2/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '07' AND '09' THEN '3/4'
+            WHEN SUBSTR(jumin, 3, 2)  BETWEEN '10' AND '12' THEN '4/4'
+                                                      
+       END "Quarter"
+       
+FROM student
+WHERE deptno1 = 201;
+
+
+-- 사원수 구하는 함수
+SELECT COUNT(*)
+FROM EMP;
+
+
+SELECT COUNT(*),                 -- 모든 컬럼
+       COUNT(comm),
+       SUM(comm),
+       AVG(comm),
+       MAX(sal),
+       MIN(sal),
+       MIN(hiredate),
+       MAX(hiredate),
+       STDDEV(sal),              --표준편차
+       VARIANCE(sal)            -- 분산
+FROM emp;                       --emp 테이블 중에서
+
+
+SELECT DEPTNO,
+    JOB,
+    AVG(NVL(SAL, 0)) "평균 급여"
+FROM EMP
+GROUP BY deptno, job --그룹화 
+ORDER BY 1, 2;
+
+
+SELECT deptno no,
+       job,
+       avg(nvl(sal,0))"평균급여"
+FROM EMP
+GROUP BY no, job
+ORDER BY 1, 2;
+-- 이런 방식으로 하면 안됨
+
+
+SELECT DEPTNO,
+    JOB,
+    AVG(NVL(SAL, 0)) "평균 급여"
+FROM EMP
+GROUP BY deptno, job
+HAVING AVG(NVL(sal, 0)) > 2000 
+ORDER BY 1, 2, 3;
+-- 오더바이는 항상 마지막에
+
+-- 문제
+-- 부서와 직업별 평균 급여 및 사원수와
+-- 부서별 평균 급여와 사원 수
+-- 전체 사원의 평균 급여와 사원수를 구하시오.
+
+CREATE TABLE cat_a (no NUMBER, name VARCHAR2(1));
+INSERT INTO cat_a VALUES(1, 'A');
+INSERT INTO cat_a VALUES(2, 'B');
+CREATE TABLE cat_b (no NUMBER, name VARCHAR2(1));
+INSERT INTO cat_b VALUES(1, 'C');
+INSERT INTO cat_b VALUES(2, 'D');
+CREATE TABLE cat_c (no NUMBER, name VARCHAR2(1));
+INSERT INTO cat_c VALUES(1, 'E');
+INSERT INTO cat_c VALUES(2, 'F');
+commit;
