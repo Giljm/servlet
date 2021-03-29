@@ -177,6 +177,9 @@ public class MemberDAO {
 
 	public void SELECT() {
 
+		
+		
+		
 	}
 
 }
