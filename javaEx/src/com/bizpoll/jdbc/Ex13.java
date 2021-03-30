@@ -9,7 +9,9 @@ public class Ex13 {
 		MemberDAO mdao = new MemberDAO();
 		
 //		mdao.INSERT();
-		mdao.DELETE();
+//		mdao.DELETE();
+		
+		mdao.Login();
 	}
 
 }

@@ -18,7 +18,7 @@ public class MemberMain {
 
 		List<MemberDTO> memList = memSearch.memSearch(searchKey);
 		
-		System.out.println("이거 >> " + memList);
+		System.out.println("이거 >> " + searchKey);
 
 		if (memList.size() > 0) {
 			for (MemberDTO memberDTO : memList) {

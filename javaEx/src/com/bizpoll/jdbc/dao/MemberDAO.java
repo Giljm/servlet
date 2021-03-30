@@ -3,6 +3,7 @@ package com.bizpoll.jdbc.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Scanner;
 
 import com.bizpoll.jdbc.dto.MemberDTO;
@@ -135,9 +136,6 @@ public class MemberDAO {
 		int succ = 0;
 		MemberDTO mDto = new MemberDTO();
 
-		
-		
-		
 		while (true) {
 
 			System.out.print("삭제할 회원의 번호를 입력하세요 : ");
@@ -163,6 +161,7 @@ public class MemberDAO {
 
 			} catch (Exception e) {
 				System.out.println("정수만 입력하세요");
+				continue;
 			}
 
 			if (succ > 0) {
@@ -180,4 +179,57 @@ public class MemberDAO {
 
 	}
 
+	public void Login() {
+
+		int rsNo = 0;
+		String stNo = null;
+		String rsName = null;
+
+		while (true) {
+			System.out.print("회원번호 입력 >> ");
+			String strId = sc.nextLine();
+
+			System.out.print("이름 입력 >> ");
+			String strName = sc.nextLine();
+
+			try {
+
+				int intId = Integer.valueOf(strId);
+
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				Connection con = DriverManager.getConnection(url, user, pw); // try
+
+				String sql = "SELECT no, name " + "FROM tblMember " + "WHERE no = ? AND name = ?";
+				PreparedStatement pstmt = con.prepareStatement(sql);
+
+				pstmt.setInt(1, intId);
+				pstmt.setString(2, strName);
+				ResultSet succ = pstmt.executeQuery();
+
+				while (succ.next()) { // 데이터가 여러개 일대 리스트 형식으로 받아 와야한다
+
+					rsNo = succ.getInt("no");
+					stNo = Integer.toString(rsNo);
+					rsName = succ.getString("name");
+				}
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+
+			}
+
+			if (strId.equals(stNo) && strName.equals(rsName)) {
+
+				System.out.println(rsName + " 님 로그인 하셨습니다.");
+				break;
+
+			} else {
+
+				System.out.println("로그인 실패");
+				continue;
+			}
+
+		}
+	}
 }
