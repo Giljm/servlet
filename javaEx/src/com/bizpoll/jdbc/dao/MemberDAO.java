@@ -133,22 +133,24 @@ public class MemberDAO {
 	public void DELETE() {
 
 		int succ = 0;
+		MemberDTO mDto = new MemberDTO();
 
-		System.out.print("삭제할 회원의 번호를 입력하세요 : ");
-		String updateno = sc.nextLine();
-
+		
+		
+		
 		while (true) {
+
+			System.out.print("삭제할 회원의 번호를 입력하세요 : ");
+			String strUpno = sc.nextLine();
+
 			try {
+				int upno = Integer.valueOf(strUpno);
+				mDto.setNo(upno); // 스캐너로 받은 데이터를 set으로 입력
 
-				sc.close();
+				System.out.println("삭제한 회원의 번호 : " + upno);
 
-				System.out.println("삭제한 회원의 번호 : " + updateno);
-
-				int upno = Integer.valueOf(updateno);
-				mDto.setNo(upno);
-
-				Class.forName("oracle.jdbc.driver.OracleDriver");
-				Connection con = DriverManager.getConnection(url, user, pw);
+				Class.forName("oracle.jdbc.driver.OracleDriver"); // try
+				Connection con = DriverManager.getConnection(url, user, pw); // try
 				System.out.println("DB에 접속하셨습니다.");
 
 				String sql = "DELETE FROM tblMember " + "WHERE no = ?";
@@ -161,7 +163,6 @@ public class MemberDAO {
 
 			} catch (Exception e) {
 				System.out.println("정수만 입력하세요");
-				continue;
 			}
 
 			if (succ > 0) {
@@ -177,9 +178,6 @@ public class MemberDAO {
 
 	public void SELECT() {
 
-		
-		
-		
 	}
 
 }
