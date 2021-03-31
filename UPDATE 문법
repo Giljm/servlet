@@ -1,7 +1,8 @@
-UPDATE 문법
+-- UPDATE 문법
+-- 데이터 변경 (UPDATE)
 
 UPDATE table명
-SET 컬럼명 = value -- 어떤 컬럼을
+SET 컬럼명
 WHERE 조건; 
 
 UPDATE professor

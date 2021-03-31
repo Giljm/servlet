@@ -1,8 +1,10 @@
 -- 데이터 조회 (SELECT)
--- 모든 컬럼 조회
+-- 모든 컬럼 조회는 * 를 사용
+
 SELECT *
-FROM emp;
--- 원하는 컬럼만 조회
+FROM '테이블 명'
+WHERE 조건;
+
 
 SELECT empno eno1,
        ename,

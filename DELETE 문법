@@ -1,5 +1,6 @@
+-- DELETE 문법
+-- 데이터 삭제 (DELETE)
 
-DELETE 문법
 DELETE FROM table명
 WHERE 조건 ;
 

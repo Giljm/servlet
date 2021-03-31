@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
+import com.bizpoll.common.DBManager;
 import com.bizpoll.jdbc.dto.MemberDTO;
 
 public class MemberDAO {
@@ -15,6 +16,9 @@ public class MemberDAO {
 	String pw = "1234";
 	Scanner sc = new Scanner(System.in);
 	MemberDTO mDto = new MemberDTO();
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
 
 	public void INSERT() {
 
@@ -48,13 +52,13 @@ public class MemberDAO {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 
-			Connection con = DriverManager.getConnection(url, user, pw);
+			con = DriverManager.getConnection(url, user, pw);
 
 			System.out.println("DB에 접속하셨습니다.");
 
 			String sql = "INSERT INTO tblMember VALUES (?, ?, ?, ?, ?)";
 
-			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt = con.prepareStatement(sql);
 
 			pstmt.setInt(1, mDto.getNo());
 			pstmt.setString(2, mDto.getName());
@@ -65,6 +69,10 @@ public class MemberDAO {
 			succ = pstmt.executeUpdate();
 
 		} catch (Exception e) {
+
+		} finally {
+
+			DBManager.close(con, pstmt);
 
 		}
 
@@ -109,13 +117,13 @@ public class MemberDAO {
 
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 
-			Connection con = DriverManager.getConnection(url, user, pw);
+			con = DriverManager.getConnection(url, user, pw);
 
 			System.out.println("DB에 접속하셨습니다.");
 
 			String sql = "UPDATE tblMember " + "SET no = ?, name = ?, age = ?, addr = ?, phone = ? " + "WHERE no = ?";
 
-			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt = con.prepareStatement(sql);
 
 			pstmt.setInt(1, mDto.getNo());
 			pstmt.setString(2, mDto.getName());
@@ -127,6 +135,10 @@ public class MemberDAO {
 			succ = pstmt.executeUpdate();
 
 		} catch (Exception e) {
+
+		} finally {
+
+			DBManager.close(con, pstmt);
 
 		}
 	}
@@ -148,11 +160,11 @@ public class MemberDAO {
 				System.out.println("삭제한 회원의 번호 : " + upno);
 
 				Class.forName("oracle.jdbc.driver.OracleDriver"); // try
-				Connection con = DriverManager.getConnection(url, user, pw); // try
+				con = DriverManager.getConnection(url, user, pw); // try
 				System.out.println("DB에 접속하셨습니다.");
 
 				String sql = "DELETE FROM tblMember " + "WHERE no = ?";
-				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt = con.prepareStatement(sql);
 
 				pstmt.setInt(1, mDto.getNo());
 				succ = pstmt.executeUpdate();
@@ -162,6 +174,9 @@ public class MemberDAO {
 			} catch (Exception e) {
 				System.out.println("정수만 입력하세요");
 				continue;
+			} finally {
+				DBManager.close(con, pstmt);
+
 			}
 
 			if (succ > 0) {
@@ -177,6 +192,64 @@ public class MemberDAO {
 
 	public void SELECT() {
 
+		int rsNo = 0;
+		String rsName = null;
+		int rsAge = 0;
+		String rsAddr = null;
+		String rsPhone = null;
+
+		while (true) {
+			System.out.print("조회할 회원 이름 입력 >> ");
+			String strName = sc.nextLine();
+
+			try {
+
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				con = DriverManager.getConnection(url, user, pw); // try
+
+				String sql = "SELECT * " + "FROM tblmember " + "WHERE name LIKE ?";
+				pstmt = con.prepareStatement(sql);
+
+				pstmt.setString(1, "%" + strName + "%");
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+
+					rsNo = rs.getInt("no");
+					rsName = rs.getString("name");
+					rsAge = rs.getInt("age");
+					rsAddr = rs.getString("addr");
+					rsPhone = rs.getString("phone");
+
+				}
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+
+			} finally {
+
+				DBManager.close(con, pstmt, rs);
+
+			}
+
+			if (strName.equals(rsName)) {
+
+				System.out.println("회원 번호 : " + rsNo);
+				System.out.println("이름 : " + rsName);
+				System.out.println("나이 : " + rsAge);
+				System.out.println("주소지 : " + rsAddr);
+				System.out.println("휴대폰 번호 : " + rsPhone);
+
+				break;
+
+			} else {
+
+				System.out.println("데이터가 없습니다.");
+				continue;
+			}
+
+		}
 	}
 
 	public void Login() {
@@ -194,28 +267,30 @@ public class MemberDAO {
 
 			try {
 
-				int intId = Integer.valueOf(strId);
-
-				Class.forName("oracle.jdbc.driver.OracleDriver");
-				Connection con = DriverManager.getConnection(url, user, pw); // try
+				DBManager.getConnection();
 
 				String sql = "SELECT no, name " + "FROM tblMember " + "WHERE no = ? AND name = ?";
-				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt = con.prepareStatement(sql);
 
+				int intId = Integer.valueOf(strId);
 				pstmt.setInt(1, intId);
 				pstmt.setString(2, strName);
-				ResultSet succ = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 
-				while (succ.next()) { // 데이터가 여러개 일대 리스트 형식으로 받아 와야한다
+				while (rs.next()) { // 데이터가 여러개 일대 리스트 형식으로 받아 와야한다
 
-					rsNo = succ.getInt("no");
+					rsNo = rs.getInt("no");
 					stNo = Integer.toString(rsNo);
-					rsName = succ.getString("name");
+					rsName = rs.getString("name");
 				}
 
 			} catch (Exception e) {
 
 				e.printStackTrace();
+
+			} finally {
+
+				DBManager.close(con, pstmt, rs);
 
 			}
 

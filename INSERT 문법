@@ -1,5 +1,6 @@
+-- INSERT 문법
+-- 데이터 삽입 (INSERT)
 
-INSERT문법
 INSERT INTO table명 (컬럼명1, 컬럼명2, ....)
 VALUES(값1, 값2, ....);
 

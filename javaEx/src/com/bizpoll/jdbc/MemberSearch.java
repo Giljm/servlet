@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bizpoll.common.DBManager;
 import com.bizpoll.jdbc.dto.MemberDTO;
 
 public class MemberSearch {
@@ -56,30 +57,32 @@ public class MemberSearch {
 			e.printStackTrace();
 
 		} finally {
+			
+			DBManager.close(con, pstmt, rs);
 
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+//			if (rs != null) {
+//				try {
+//					rs.close();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//
+//			if (pstmt != null) {
+//				try {
+//					pstmt.close();
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//
+//			if (con != null) {
+//				try {
+//					con.close();
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//			}
 
 		}
 
