@@ -30,51 +30,92 @@ public class AdminDAO {
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 
+	public void inputScId() {
+
+		System.out.print("ID 입력 >> ");
+		strId = sc.nextLine();
+
+	}
+
 	public void inputSc() {
 
-		System.out.print("ID 입력 >>");
-		strId = sc.nextLine();
-		System.out.print("PW 입력 >>");
+		System.out.print("PW 입력 >> ");
 		strPw = sc.nextLine();
-		System.out.print("이름 입력 >>");
+		System.out.print("이름 입력 >> ");
 		strName = sc.nextLine();
-		System.out.print("휴대폰 번호 입력 >>");
+		System.out.print("휴대폰 번호 입력 >> ");
 		strPhone = sc.nextLine();
+
 	}
 
 	public void ManagerInsert() {
-		inputSc();
 
+		String strCheck = null;
 		AdminDTO aDto = new AdminDTO();
 
-		aDto.setId(strId);
-		aDto.setPwd(strPw);
-		aDto.setName(strName);
-		aDto.setPhone(strPhone);
+		while (true) {
 
-		try {
+			inputScId();
+			aDto.setId(strId);
 
-			con = DBManager.getConnection();
-			String sql = "INSERT INTO ADMIN VALUES (?, ?, ?, ?)";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, aDto.getId());
-			pstmt.setString(2, aDto.getPwd());
-			pstmt.setString(3, aDto.getName());
-			pstmt.setString(4, aDto.getPhone());
-			System.out.println("등록 성공!");
+			// 여기까지 스캐너를 통해 받은 값을 aDto의 strId 에 저장된다
 
-			pstmt.executeUpdate();
+			try {
+				con = DBManager.getConnection();
+				String sql = "SELECT ID " + "FROM ADMIN " + "WHERE ID = ?";
 
-		} catch (Exception e) {
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, aDto.getId());
 
-			e.printStackTrace();
+				rs = pstmt.executeQuery();
 
-		} finally {
+				while (rs.next()) {
 
-			DBManager.close(con, pstmt);
+					strCheck = rs.getString("ID");
 
+				}
+
+			} catch (Exception e) {
+
+			}
+
+			if (strId.equals(strCheck)) {
+
+				System.out.println("중복된 ID 입니다");
+
+			} else {
+
+				inputSc();
+				aDto.setPwd(strPw);
+				aDto.setName(strName);
+				aDto.setPhone(strPhone);
+
+				try {
+
+					con = DBManager.getConnection();
+					String sql = "INSERT INTO ADMIN VALUES (?, ?, ?, ?)";
+					pstmt = con.prepareStatement(sql);
+					pstmt.setString(1, aDto.getId());
+					pstmt.setString(2, aDto.getPwd());
+					pstmt.setString(3, aDto.getName());
+					pstmt.setString(4, aDto.getPhone());
+					System.out.println("\n등록 성공!\n");
+
+					pstmt.executeUpdate();
+
+					break;
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+
+				} finally {
+
+					DBManager.close(con, pstmt);
+
+				}
+			}
 		}
-
 	}
 
 	public void ManagerLogin() {
@@ -123,11 +164,11 @@ public class AdminDAO {
 
 		if (ID.equals(strId) && Pw.equals(strPwd)) {
 
-			System.out.println(strId + " 님 반갑습니다.");
+			System.out.println("\n" + strId + " 님 반갑습니다.\n");
 
 		} else {
 
-			System.out.println("없는 사용자 입니다.");
+			System.out.println("\n없는 사용자 입니다.\n");
 
 		}
 

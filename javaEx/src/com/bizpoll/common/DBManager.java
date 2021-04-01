@@ -41,7 +41,6 @@ public class DBManager {
 			try {
 				Class.forName(DRIVER);
 				con = DriverManager.getConnection(Url, User, Pw);
-				System.out.println("접속 성공!");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
