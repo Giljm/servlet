@@ -1,13 +1,9 @@
 package com.bizpoll.admin.DAO;
 
-import java.awt.dnd.DnDConstants;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Statement;
 import java.util.Scanner;
 
 import com.bizpoll.admin.DTO.AdminDTO;
@@ -118,12 +114,12 @@ public class AdminDAO {
 		}
 	}
 
-	public void ManagerLogin() {
+	public boolean ManagerLogin() {
+
+		boolean bYes = false;
 
 		String strId = null;
 		String strPwd = null;
-		String strName = null;
-		String strPhone = null;
 
 		String ID = null;
 		String Pw = null;
@@ -165,12 +161,138 @@ public class AdminDAO {
 		if (ID.equals(strId) && Pw.equals(strPwd)) {
 
 			System.out.println("\n" + strId + " 님 반갑습니다.\n");
+			bYes = true;
 
 		} else {
 
 			System.out.println("\n없는 사용자 입니다.\n");
 
 		}
+
+		return bYes;
+
+	}
+
+	public void ManagerList() {
+
+		String name = null;
+
+		try {
+
+			con = DBManager.getConnection();
+
+			Statement pstmt = con.createStatement();
+			String sql = "SELECT NAME " + "FROM ADMIN ";
+			rs = pstmt.executeQuery(sql);
+
+			while (rs.next()) {
+
+				String strName = rs.getString("NAME");
+				System.out.println("관리자 : " + strName);
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			DBManager.close(con, pstmt, rs);
+
+		}
+
+	}
+
+	public void ManagerUpdate() {
+
+		AdminDTO aDto = new AdminDTO();
+
+		System.out.print("수정할 ID입력 >> ");
+		String strId2 = sc.nextLine();
+		System.out.print("새로운 ID입력 >> ");
+		String strId = sc.nextLine();
+		System.out.print("새로운 비밀번호 입력 >> ");
+		String strPw = sc.nextLine();
+		System.out.print("새로운 이름입력 >> ");
+		String strName = sc.nextLine();
+		System.out.print("새로운 휴대폰 번호 입력 >> ");
+		String strPhone = sc.nextLine();
+
+		aDto.setId(strId);
+		aDto.setPwd(strPw);
+		aDto.setName(strName);
+		aDto.setPhone(strPhone);
+
+		try {
+
+			con = DBManager.getConnection();
+			String sql = "UPDATE ADMIN " + "SET ID = ?, PWD = ?, NAME = ?, phone = ? " + "WHERE ID = ?";
+
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, aDto.getId());
+			pstmt.setString(2, aDto.getPwd());
+			pstmt.setString(3, aDto.getName());
+			pstmt.setString(4, aDto.getPhone());
+			pstmt.setString(5, strId2);
+
+			pstmt.executeUpdate();
+
+			System.out.println("\n수정 성공!\n");
+			
+		} catch (Exception e) {
+
+
+		} finally {
+
+			DBManager.close(con, pstmt);
+
+		}
+	}
+
+	// 아이디체크
+	public boolean adminIdCheck(String id) {
+
+		int resultCnt = 0;
+		boolean useYN = false;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBManager.getConnection();
+
+			String sql = "SELECT count(*) " + "FROM ADMIN " + "WHERE ID = ?";
+
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+
+				resultCnt = rs.getInt("count(*)");
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			DBManager.close(con, pstmt, rs);
+
+		}
+
+		if (resultCnt == 0) {
+
+			useYN = true;
+
+		}
+
+		return useYN;
 
 	}
 
