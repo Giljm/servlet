@@ -18,31 +18,10 @@ public class AdminDAO {
 	// 로그인
 
 	Scanner sc = new Scanner(System.in);
-	String strId = null;
-	String strPw = null;
-	String strName = null;
-	String strPhone = null;
+
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-
-	public void inputScId() {
-
-		System.out.print("ID 입력 >> ");
-		strId = sc.nextLine();
-
-	}
-
-	public void inputSc() {
-
-		System.out.print("PW 입력 >> ");
-		strPw = sc.nextLine();
-		System.out.print("이름 입력 >> ");
-		strName = sc.nextLine();
-		System.out.print("휴대폰 번호 입력 >> ");
-		strPhone = sc.nextLine();
-
-	}
 
 	public void ManagerInsert() {
 
@@ -51,7 +30,10 @@ public class AdminDAO {
 
 		while (true) {
 
-			inputScId();
+			System.out.print("ID 입력 >> ");
+			String strId = sc.nextLine();
+			
+			
 			aDto.setId(strId);
 
 			// 여기까지 스캐너를 통해 받은 값을 aDto의 strId 에 저장된다
@@ -81,7 +63,12 @@ public class AdminDAO {
 
 			} else {
 
-				inputSc();
+				System.out.print("PW 입력 >> ");
+				String strPw = sc.nextLine();
+				System.out.print("이름 입력 >> ");
+				String strName = sc.nextLine();
+				System.out.print("휴대폰 번호 입력 >> ");
+				String strPhone = sc.nextLine();
 				aDto.setPwd(strPw);
 				aDto.setName(strName);
 				aDto.setPhone(strPhone);
@@ -239,9 +226,8 @@ public class AdminDAO {
 			pstmt.executeUpdate();
 
 			System.out.println("\n수정 성공!\n");
-			
-		} catch (Exception e) {
 
+		} catch (Exception e) {
 
 		} finally {
 
